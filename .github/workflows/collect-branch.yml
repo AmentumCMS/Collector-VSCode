@@ -28,14 +28,14 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-
+        
       - name: Install Skopeo
         run: |
           sudo apt-get update -y
           sudo apt-get install -y skopeo pigz
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3 
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -81,23 +81,25 @@ jobs:
   VSCodeSync:
     needs: [Date]
     runs-on: ubuntu-24.04
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-
+    
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3 
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+          
       - name: Run Sync
         id: docker_run_sync
         run: |
           docker run \
             -v $PWD/artifacts:/artifacts \
             -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries --vscode-version ${{ vars.VSCVER }}" \
-            lolinternet/vscsync:1.0.27
+            lolinternet/vscsync
 
       - name: Reset Permissions due to container as root
         run: |
@@ -226,7 +228,7 @@ jobs:
         with:
           name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
           path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
-          if-no-files-found: error
+          if-no-files-found: error    
 
       - name: Upload VSIX ZIP Inventory
         uses: actions/upload-artifact@v4
@@ -246,7 +248,7 @@ jobs:
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
-
+          
       - name: Update Submodules if needed
         shell: bash
         run: git submodule update --init --recursive --remote
@@ -280,6 +282,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -313,6 +317,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Install mkisofs
         run: |

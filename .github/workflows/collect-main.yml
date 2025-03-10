@@ -83,6 +83,8 @@ jobs:
   VSCodeSync:
     needs: [Date]
     runs-on: ubuntu-24.04
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -99,7 +101,7 @@ jobs:
           docker run \
             -v $PWD/artifacts:/artifacts \
             -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries --vscode-version ${{ vars.VSCVER }}" \
-            lolinternet/vscsync:1.0.27
+            lolinternet/vscsync
 
       - name: Reset Permissions due to container as root
         run: |
@@ -282,6 +284,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -336,7 +340,7 @@ jobs:
         run: ls -Alh ${{ vars.COLLECTOR }}-*.*
 
       - name: Send Files to Sharepoint
-        uses: amentumcms/sharepoint-file-upload-action@pappasjfed-patch-1
+        uses: amentumcms/sharepoint-file-upload-action@main
         with:
           file_path: "${{ vars.COLLECTOR }}-*.*"
           host_name: "${{ secrets.SHAREPOINT_HOST }}"
@@ -354,6 +358,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Install mkisofs
         run: |
@@ -400,7 +406,7 @@ jobs:
         run: ls -Alh *.iso*
 
       - name: Send ISO to Sharepoint
-        uses: amentumcms/sharepoint-file-upload-action@pappasjfed-patch-1
+        uses: amentumcms/sharepoint-file-upload-action@main
         with:
           file_path: "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*"
           host_name: "${{ secrets.SHAREPOINT_HOST }}"
