@@ -81,6 +81,8 @@ jobs:
   VSCodeSync:
     needs: [Date]
     runs-on: ubuntu-24.04
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -97,7 +99,7 @@ jobs:
           docker run \
             -v $PWD/artifacts:/artifacts \
             -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries --vscode-version ${{ vars.VSCVER }}" \
-            lolinternet/vscsync:1.0.27
+            lolinternet/vscsync
 
       - name: Reset Permissions due to container as root
         run: |
@@ -280,6 +282,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -313,6 +317,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
     steps:
       - name: Install mkisofs
         run: |
