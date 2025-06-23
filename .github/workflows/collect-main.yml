@@ -6,7 +6,7 @@ on:
   release:
     types: [edited, released]
   schedule:
-    - cron: "0 0 * * 1" # Update weekly on Monday Midnight
+    - cron: "0 0 1 * *" # Update on First of month at midnight UTC
   workflow_dispatch:
 
 jobs:
