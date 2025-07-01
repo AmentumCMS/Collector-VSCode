@@ -99,7 +99,7 @@ jobs:
         id: docker_run_sync
         run: |
           docker run \
-            -v $PWD/artifacts:/artifacts \
+            -v $PWD/artifacts:/artifacts:Z \
             -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries" \
             ghcr.io/amentumcms/vscodeoffline/vscsync:main
 
