@@ -100,7 +100,7 @@ jobs:
         run: |
           docker run \
             -v $PWD/artifacts:/artifacts \
-            -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries \
+            -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries' \
             ghcr.io/amentumcms/vscodeoffline/vscsync:main
 
       - name: Reset Permissions due to container as root
