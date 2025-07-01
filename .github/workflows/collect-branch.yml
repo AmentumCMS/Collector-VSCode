@@ -27,14 +27,12 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-
       - name: Install Skopeo
         run: |
           sudo apt-get update -y
           sudo apt-get install -y skopeo pigz
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
@@ -46,7 +44,6 @@ jobs:
             -u ${{ secrets.REGISTRY_USER }} \
             -p ${{ secrets.REGISTRY_TOKEN }}
 
-
       - name: Run Skopeo Sync
         run: |
           skopeo sync \
@@ -54,9 +51,7 @@ jobs:
             ${{ vars.COLLECTOR }}.yml \
             ${{ vars.COLLECTOR }}
 
-
       - name: TARchive Skopeo Sync
-        run: |
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz \
@@ -79,7 +74,7 @@ jobs:
         with:
           name: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz.sha
           path: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz.sha
-          if-no-files-found: error 
+          if-no-files-found: error
 
   VSCodeSync:
     needs: [Date]
@@ -90,14 +85,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-
       - name: Login to DockerHub
-        uses: docker/login-action@v3
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
 
       - name: Run Sync
         id: docker_run_sync
@@ -134,12 +126,11 @@ jobs:
         with:
           name: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha
           path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha
-  
+
       - name: Extract the vsix files
         run: |
           cd artifacts
           ../extract-vsix.sh
-
 
       - name: Zip up the extracted vsix files
         run: |
@@ -153,9 +144,7 @@ jobs:
           echo -e "\nListing Files" &&\
           ls -Alh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
 
-
       - name: TARchive VSCsync Extension Artifacts
-        run: |
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz \
@@ -168,7 +157,6 @@ jobs:
           ls -Alh ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: TARchive VSCsync Installer Artifacts
-        run: |
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz \
@@ -192,7 +180,6 @@ jobs:
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
           if-no-files-found: error
 
-
       - name: Upload extension TARchive Inventory
         uses: actions/upload-artifact@v4
         with:
@@ -213,7 +200,6 @@ jobs:
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
           if-no-files-found: error
 
-
       - name: Upload Installers TARchive Inventory
         uses: actions/upload-artifact@v4
         with:
@@ -227,7 +213,7 @@ jobs:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
           if-no-files-found: error
-  
+
       - name: Upload VSIX ZIP
         uses: actions/upload-artifact@v4
         with:
@@ -235,13 +221,11 @@ jobs:
           path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
           if-no-files-found: error
 
-
       - name: Upload VSIX ZIP Inventory
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
           path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
-          if-no-files-found: error
           if-no-files-found: error
 
       - name: Upload VSIX ZIP Inventory
@@ -262,7 +246,6 @@ jobs:
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
           git config user.email "$(git log -n 1 --pretty=format:%ae)"
-
 
       - name: Update Submodules if needed
         shell: bash
@@ -290,7 +273,7 @@ jobs:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
           if-no-files-found: error
-  
+
   Release:
     runs-on: ubuntu-24.04
     needs: [Date, Code, Skopeo, VSCodeSync]
