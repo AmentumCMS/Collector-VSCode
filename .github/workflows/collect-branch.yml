@@ -3,8 +3,6 @@ on:
   push:
     branches-ignore:
       - main
-  release:
-    types: [edited, released]
   workflow_dispatch:
 
 jobs:
@@ -97,9 +95,9 @@ jobs:
         id: docker_run_sync
         run: |
           docker run \
-            -v $PWD/artifacts:/artifacts \
-            -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries --vscode-version ${{ vars.VSCVER }}" \
-            lolinternet/vscsync
+            -v $PWD/artifacts:/artifacts:Z \
+            -e SYNCARGS="--frequency 0 --check-specified-extensions --update-extensions --update-binaries" \
+            ghcr.io/amentumcms/vscodeoffline/vscsync:main
 
       - name: Reset Permissions due to container as root
         run: |
@@ -258,7 +256,7 @@ jobs:
           git bundle create --progress ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle --all &&\
           echo -e "\nCreating Hash" &&\
           sha256sum ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle \
-            | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha &&\
+          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha &&\
           echo -e "\nListing Files" &&\
           ls -Alht *
 
