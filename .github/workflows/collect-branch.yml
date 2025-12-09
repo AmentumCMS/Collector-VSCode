@@ -60,7 +60,7 @@ jobs:
           sha256sum ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz \
           | tee ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz.sha &&\
           echo -e "\nListing Files" &&\
-          ls -Alh ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
+          ls -1sh ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: Upload TARchive
         uses: actions/upload-artifact@v4
@@ -113,7 +113,7 @@ jobs:
           sha256sum ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip \
             | tee ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha &&\
           echo -e "\nListing Files" &&\
-          ls -Alht ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
+          ls -1sht ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
 
       - name: Upload jsons
         uses: actions/upload-artifact@v4
@@ -142,7 +142,7 @@ jobs:
           sha256sum ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
             | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha &&\
           echo -e "\nListing Files" &&\
-          ls -Alh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
+          ls -1sh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
 
       - name: TARchive VSCsync Extension Artifacts
         run: |
@@ -150,11 +150,11 @@ jobs:
             -f ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz \
             artifacts/extensions artifacts/*.json \
             | tee ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt && \
-          echo -e "\Creating Hash" &&\
+          echo -e "\nCreating Hash" &&\
           sha256sum ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz \
             | tee ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.sha &&\
           echo -e "\nListing Files" &&\
-          ls -Alh ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
+          ls -1sh ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: TARchive VSCsync Installer Artifacts
         run: |
@@ -166,7 +166,7 @@ jobs:
           sha256sum ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz \
             | tee ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
           echo -e "\nListing Files" &&\
-          ls -Alh ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
+          ls -1sh ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: List remaining files in artifacts
         run: |
@@ -258,7 +258,7 @@ jobs:
           sha256sum ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle \
           | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha &&\
           echo -e "\nListing Files" &&\
-          ls -Alht *
+          ls -1sht *
 
       - name: Upload bundle
         uses: actions/upload-artifact@v4
@@ -292,7 +292,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alh ${{ vars.COLLECTOR }}-*.*
+        run: ls -1sh ${{ vars.COLLECTOR }}-*.*
 
   Sharepoint:
     runs-on: ubuntu-24.04
@@ -307,7 +307,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alh ${{ vars.COLLECTOR }}-*.*
+        run: ls -1sh ${{ vars.COLLECTOR }}-*.*
 
   MakeISO:
     runs-on: ubuntu-24.04
@@ -329,7 +329,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alh ${{ vars.COLLECTOR }}-*.*
+        run: ls -1sh ${{ vars.COLLECTOR }}-*.*
 
       - name: ISO Table of contents
         run: |
@@ -360,4 +360,4 @@ jobs:
             ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.sha
 
       - name: Show ISO & Hash
-        run: ls -Alh *.iso*
+        run: ls -1sh *.iso*
