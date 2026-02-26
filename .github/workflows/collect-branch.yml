@@ -361,3 +361,10 @@ jobs:
 
       - name: Show ISO & Hash
         run: ls -1sh *.iso*
+
+      - name: Upload iso artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
+          path: ${{ vars.COLLECTOR }}-${{ needs.Setup.outputs.Date }}.iso*
+          if-no-files-found: error
