@@ -127,22 +127,22 @@ jobs:
           name: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha
           path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha
 
-      - name: Extract the vsix files
-        run: |
-          cd artifacts
-          ../extract-vsix.sh
+      # - name: Extract the vsix files
+      #   run: |
+      #     cd artifacts
+      #     ../extract-vsix.sh
 
-      - name: Zip up the extracted vsix files
-        run: |
-          zip -m \
-            ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
-            artifacts/*.vsix \
-            | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt && \
-          echo -e "\nCreating Hash" &&\
-          sha256sum ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
-            | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha &&\
-          echo -e "\nListing Files" &&\
-          ls -1sh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
+      # - name: Zip up the extracted vsix files
+      #   run: |
+      #     zip -m \
+      #       ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
+      #       artifacts/*.vsix \
+      #       | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt && \
+      #     echo -e "\nCreating Hash" &&\
+      #     sha256sum ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
+      #       | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha &&\
+      #     echo -e "\nListing Files" &&\
+      #     ls -1sh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
 
       - name: TARchive VSCsync Extension Artifacts
         run: |
@@ -318,10 +318,10 @@ jobs:
     env:
         GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Install mkisofs
+      - name: Install xorriso
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y mkisofs isomd5sum
+          sudo apt-get install -y xorriso isomd5sum
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4
@@ -345,9 +345,10 @@ jobs:
 
       - name: Make ISO
         run: |
-          mkisofs -J -R -v -T -l \
-            -V '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
-            -A '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
+          xorriso -as mkisofs \
+          -r -J -udf -iso-level 3 -v -T -l \
+            -V "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
+            -A "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
             -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
             ${{ vars.COLLECTOR }}-*.*
 
