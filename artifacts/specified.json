@@ -59,6 +59,8 @@
         "twxs.cmake",
         "vincaslt.highlight-matching-tag",
         "visualstudioexptteam.intellicode-api-usage-examples",
+        "vmware.vscode-boot-dev-pack",
+        "vmware-pscoe.vrealize-developer-tools",
         "vscjava.vscode-gradle",
         "vscjava.vscode-java-debug",
         "vscjava.vscode-java-dependency",
