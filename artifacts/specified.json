@@ -80,6 +80,7 @@
         "wallabyjs.quokka-vscode",
         "wallabyjs.wallaby-extension-pack",
         "dsznajder.es7-react-js-snippets",
-        "vscodevim.vim"
+        "vscodevim.vim",
+        "zenclabs.previewjs"
     ]
 }
