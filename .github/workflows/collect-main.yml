@@ -181,7 +181,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
-          path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
+          path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload extension TARchive Inventory
@@ -191,17 +191,11 @@ jobs:
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
-      - name: Upload extension TARchive Hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.sha
-          path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.sha
-
       - name: Upload Installers TARchive
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
-          path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
+          path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload Installers TARchive Inventory
@@ -211,33 +205,19 @@ jobs:
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
-      - name: Upload Installers TARchive hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
-          path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
-          if-no-files-found: error
+      # - name: Upload VSIX ZIP
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
+      #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
+      #     if-no-files-found: error
 
-      - name: Upload VSIX ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
-          path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
-          if-no-files-found: error
-
-      - name: Upload VSIX ZIP Inventory
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
-          path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
-          if-no-files-found: error
-
-      - name: Upload VSIX ZIP Inventory
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha
-          path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha
-          if-no-files-found: error
+      # - name: Upload VSIX ZIP Inventory
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
+      #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
+      #     if-no-files-found: error
 
   Code:
     needs: [Date]
