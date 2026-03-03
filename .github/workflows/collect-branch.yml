@@ -330,12 +330,14 @@ jobs:
 
       - name: Make ISO
         run: |
-          xorriso -as mkisofs \
-          -r -J -udf -iso-level 3 -v -T -l \
-            -V "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
-            -A "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
-            -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
-            ${{ vars.COLLECTOR }}-*.*
+          xorriso \
+            -joliet on -rockridge on \
+            -udf on -iso_level 3 \
+            -pathspecs on \
+            -volid "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
+            -appid "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
+            -outdev ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
+            -add ${{ vars.COLLECTOR }}-*.*
 
       - name: Implant MD5 sum into iso
         run: implantisomd5 ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
