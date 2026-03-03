@@ -27,6 +27,8 @@ jobs:
   Skopeo:
     needs: [Date]
     runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -55,7 +57,12 @@ jobs:
             ${{ vars.COLLECTOR }}.yml \
             ${{ vars.COLLECTOR }}
 
-      - name: TARchive Skopeo Sync
+      - name: Directory Contents
+        run: |
+          echo -e "Directory Contents\n$(ls -lAhS *)"
+          echo -e "\n\nDirectory Size\n$(du -hd1)"
+
+      - name: TARchive Skopeo Output
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz \
@@ -264,6 +271,8 @@ jobs:
       - name: Show Artifacts
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
 
+      # Create Release
+
       - name: Set up git
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
@@ -274,7 +283,7 @@ jobs:
         id: tag_create
         with:
           tag: ${{ needs.Date.outputs.Date }}
-          github_token: ${{secrets.GITHUB_TOKEN}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_exists_error: false
           message: "Release for ${{ needs.Date.outputs.Date }} run"
 
@@ -302,8 +311,14 @@ jobs:
         with:
           merge-multiple: true
 
+      - name: Validate Artifacts
+        run: |
+          echo -e "Artifacts Downloaded\n$(find . -type f -iname *sha -execdir sha256sum -c {} \;)"
+
       - name: Show Artifacts
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
+
+      # Upload files to Sharepoint
 
       - name: Send Files to Sharepoint
         uses: amentumcms/sharepoint-file-upload-action@main

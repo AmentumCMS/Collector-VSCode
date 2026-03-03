@@ -23,6 +23,8 @@ jobs:
   Skopeo:
     needs: [Date]
     runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -51,7 +53,12 @@ jobs:
             ${{ vars.COLLECTOR }}.yml \
             ${{ vars.COLLECTOR }}
 
-      - name: TARchive Skopeo Sync
+      - name: Directory Contents
+        run: |
+          echo -e "Directory Contents\n$(ls -lAhS *)"
+          echo -e "\n\nDirectory Size\n$(du -hd1)"
+
+      - name: TARchive Skopeo Output
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz \
@@ -271,6 +278,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true
+
+      - name: Validate Artifacts
+        run: |
+          echo -e "Artifacts Downloaded\n$(find . -type f -iname *sha -execdir sha256sum -c {} \;)"
 
       - name: Show Artifacts
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
