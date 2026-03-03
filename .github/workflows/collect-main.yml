@@ -174,8 +174,12 @@ jobs:
 
       - name: List remaining files in artifacts
         run: |
-          echo "Directory Contents"
-          ls -lah artifacts/
+          echo -e "Directory Contents:\n$(ls -lah artifacts/)"
+
+      - name: List artifacts
+        run: |
+          echo -e "Artifacts:\n$(ls -1ah ${{ vars.COLLECTOR }}-*)"
+          echo -e "\nDirectory:\n$(tree -a .)"
 
       - name: Upload extension TARchive
         uses: actions/upload-artifact@v4
@@ -267,6 +271,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true
+
+      - name: Validate Artifacts
+        run: |
+          echo -e "Artifact Validation:\n$(find . -type f -iname *sha -execdir sha256sum -c {} \;)"
 
       - name: Show Artifacts
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
