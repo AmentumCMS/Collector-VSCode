@@ -370,7 +370,7 @@ jobs:
       - name: Make ISO
         run: |
           xorrisofs \
-            -r -J -R -udf -iso-level 3 -v -T -l \
+            -r -J -R -iso-level 3 -v -T -l \
             -V "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
             -A "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
             -O ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
