@@ -370,10 +370,10 @@ jobs:
       - name: Make ISO
         run: |
           xorrisofs \
-            -r -J -R -iso-level 3 -v -T -l \
+            -r -J -R -iso-level 3 -v -l \
             -V "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
             -A "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
-            -O ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
+            -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
             ${{ vars.COLLECTOR }}-*.*
 
       - name: Implant MD5 sum into iso
