@@ -27,6 +27,8 @@ jobs:
   Skopeo:
     needs: [Date]
     runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -55,7 +57,12 @@ jobs:
             ${{ vars.COLLECTOR }}.yml \
             ${{ vars.COLLECTOR }}
 
-      - name: TARchive Skopeo Sync
+      - name: Directory Contents
+        run: |
+          echo -e "Directory Contents\n$(ls -lAhS *)"
+          echo -e "\n\nDirectory Size\n$(du -hd1)"
+
+      - name: TARchive Skopeo Output
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz \
@@ -70,14 +77,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz
-          path: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz
-          if-no-files-found: error
-
-      - name: Upload TARchive Hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz.sha
-          path: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz.sha
+          path: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
   VSCodeSync:
@@ -117,36 +117,30 @@ jobs:
           sha256sum ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip \
             | tee ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha &&\
           echo -e "\nListing Files" &&\
-          ls -1sht ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
+          ls -1sh ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
 
       - name: Upload jsons
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip
-          path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip
+          path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
 
-      - name: Upload jsons Hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha
-          path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip.sha
+      # - name: Extract the vsix files
+      #   run: |
+      #     cd artifacts
+      #     ../extract-vsix.sh
 
-      - name: Extract the vsix files
-        run: |
-          cd artifacts
-          ../extract-vsix.sh
-
-      - name: Zip up the extracted vsix files
-        run: |
-          zip -m \
-            ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
-            artifacts/*.vsix \
-            | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt && \
-          echo -e "\nCreating Hash" &&\
-          sha256sum ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
-            | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha &&\
-          echo -e "\nListing Files" &&\
-          ls -1sh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
+      # - name: Zip up the extracted vsix files
+      #   run: |
+      #     zip -m \
+      #       ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
+      #       artifacts/*.vsix \
+      #       | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt && \
+      #     echo -e "\nCreating Hash" &&\
+      #     sha256sum ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip \
+      #       | tee ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha &&\
+      #     echo -e "\nListing Files" &&\
+      #     ls -1sh ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
 
       - name: TARchive VSCsync Extension Artifacts
         run: |
@@ -157,8 +151,7 @@ jobs:
           echo -e "\nCreating Hash" &&\
           sha256sum ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz \
             | tee ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.sha &&\
-          echo -e "\nListing Files" &&\
-          ls -1sh ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
+          echo -e "\n\nListing Files:\n$(ls -1sh ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*)"
 
       - name: TARchive VSCsync Installer Artifacts
         run: |
@@ -168,20 +161,23 @@ jobs:
             | tee ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt && \
           echo -e "\nCreating Hash" &&\
           sha256sum ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz \
-            | tee ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
-          echo -e "\nListing Files" &&\
-          ls -1sh ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
+            | tee ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha &&\
+          echo -e "\n\nListing Files:\n$(ls -1sh ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*)"
 
       - name: List remaining files in artifacts
         run: |
-          echo "Directory Contents"
-          ls -lah artifacts/
+          echo -e "Directory Contents:\n$(ls -lah artifacts/)"
+
+      - name: List artifacts
+        run: |
+          echo -e "Artifacts:\n$(ls -1sh ${{ vars.COLLECTOR }}-*)"
+          echo -e "\n\nDirector Tree:\n$(tree -a .)"
 
       - name: Upload extension TARchive
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
-          path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
+          path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload extension TARchive Inventory
@@ -191,17 +187,11 @@ jobs:
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
-      - name: Upload extension TARchive Hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.sha
-          path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.sha
-
       - name: Upload Installers TARchive
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
-          path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
+          path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload Installers TARchive Inventory
@@ -211,33 +201,19 @@ jobs:
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
-      - name: Upload Installers TARchive hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
-          path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.sha
-          if-no-files-found: error
+      # - name: Upload VSIX ZIP
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
+      #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
+      #     if-no-files-found: error
 
-      - name: Upload VSIX ZIP
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
-          path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
-          if-no-files-found: error
-
-      - name: Upload VSIX ZIP Inventory
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
-          path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
-          if-no-files-found: error
-
-      - name: Upload VSIX ZIP Inventory
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha
-          path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.sha
-          if-no-files-found: error
+      # - name: Upload VSIX ZIP Inventory
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
+      #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
+      #     if-no-files-found: error
 
   Code:
     needs: [Date]
@@ -268,14 +244,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle
-          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle
-          if-no-files-found: error
-
-      - name: Upload bundle hash
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
-          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle*
           if-no-files-found: error
 
   Release:
@@ -295,8 +264,14 @@ jobs:
         with:
           merge-multiple: true
 
+      - name: Validate Artifacts
+        run: |
+          echo -e "Artifact Validation:\n$(find . -type f -iname *sha -execdir sha256sum -c {} \;)"
+
       - name: Show Artifacts
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
+
+      # Create Release
 
       - name: Set up git
         run: |
@@ -308,7 +283,7 @@ jobs:
         id: tag_create
         with:
           tag: ${{ needs.Date.outputs.Date }}
-          github_token: ${{secrets.GITHUB_TOKEN}}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_exists_error: false
           message: "Release for ${{ needs.Date.outputs.Date }} run"
 
@@ -336,8 +311,14 @@ jobs:
         with:
           merge-multiple: true
 
+      - name: Validate Artifacts
+        run: |
+          echo -e "Artifacts Downloaded\n$(find . -type f -iname *sha -execdir sha256sum -c {} \;)"
+
       - name: Show Artifacts
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
+
+      # Upload files to Sharepoint
 
       - name: Send Files to Sharepoint
         uses: amentumcms/sharepoint-file-upload-action@main
@@ -361,10 +342,10 @@ jobs:
     env:
         GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Install mkisofs
+      - name: Install xorriso
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y mkisofs isomd5sum
+          sudo apt-get install -y xorriso isomd5sum
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4
@@ -377,20 +358,21 @@ jobs:
       - name: ISO Table of contents
         run: |
           tree -a . \
-            | tee ${{ vars.COLLECTOR }}-${{ needs.Setup.outputs.Date }}.iso.txt
+            | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
 
       - name: Upload iso ToC artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
-          path: ${{ vars.COLLECTOR }}-${{ needs.Setup.outputs.Date }}.iso.txt
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
           if-no-files-found: error
 
       - name: Make ISO
         run: |
-          mkisofs -J -R -v -T -l \
-            -V '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
-            -A '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
+          xorrisofs \
+            -r -J -R -iso-level 3 -v -l \
+            -V "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
+            -A "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
             -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
             ${{ vars.COLLECTOR }}-*.*
 
@@ -404,6 +386,13 @@ jobs:
 
       - name: Show ISO & Hash
         run: ls -1sh *.iso*
+
+      - name: Upload iso artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*
+          if-no-files-found: error
 
       - name: Send ISO to Sharepoint
         uses: amentumcms/sharepoint-file-upload-action@main
