@@ -24,6 +24,10 @@ jobs:
       contents: write
       pull-requests: read
     steps:
+      - name: Determine runner mounts
+        run: |
+          sudo echo -e "Disk freespace and mounts\n$(df -hT)\n\n$(mount)" | tee runner-disks.txt
+
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
