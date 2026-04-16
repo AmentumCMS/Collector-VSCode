@@ -1,0 +1,79 @@
+name: VSCode Main Collection ISO Creation
+on:
+  release:
+    types: [edited, released]
+  workflow_dispatch:
+
+MakeISO:
+    runs-on: ubuntu-latest
+    needs: Date
+    permissions:
+      contents: write
+      pull-requests: read
+    env:
+        GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Install xorriso
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y xorriso isomd5sum
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: Show Artifacts
+        run: ls -1sh ${{ vars.COLLECTOR }}-*.*
+
+      - name: ISO Table of contents
+        run: |
+          tree -a . \
+            | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
+
+      - name: Upload iso ToC artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
+          if-no-files-found: error
+
+      - name: Make ISO
+        run: |
+          xorrisofs \
+            -r -J -R -iso-level 3 -v -l \
+            -V "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
+            -A "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}" \
+            -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
+            ${{ vars.COLLECTOR }}-*.*
+
+      - name: Implant MD5 sum into iso
+        run: implantisomd5 ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
+
+      - name: Generate Hash
+        run: |
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso | tee \
+            ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.sha
+
+      - name: Show ISO & Hash
+        run: ls -1sh *.iso*
+
+      - name: Upload iso artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*
+          if-no-files-found: error
+
+      - name: Send ISO to Sharepoint
+        uses: amentumcms/sharepoint-file-upload-action@main
+        with:
+          file_path: "${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*"
+          host_name: "${{ secrets.SHAREPOINT_HOST }}"
+          site_name: "${{ secrets.SHAREPOINT_SITE }}"
+          upload_path: "${{ secrets.SHAREPOINT_BASEPATH }}/${{ vars.COLLECTOR }}/"
+          tenant_id: ${{ secrets.SHAREPOINT_TENANT_ID }}
+          client_id: ${{ secrets.SHAREPOINT_APP_ID }}
+          client_secret: ${{ secrets.SHAREPOINT_APP_SECRET }}
+          login_endpoint: "login.microsoftonline.us"
+          graph_endpoint: "graph.microsoft.us"
