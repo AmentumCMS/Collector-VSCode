@@ -75,6 +75,7 @@
         "VisualStudioExptTeam.vscodeintellicode",
         "VisualStudioExptTeam.vscodeintellicode-completions",
         "visualstudioexptteam.intellicode-api-usage-examples",
+        "vitest.explorer",
         "vmware.vscode-boot-dev-pack",
         "vmware-pscoe.vrealize-developer-tools",
         "vscjava.vscode-gradle",
