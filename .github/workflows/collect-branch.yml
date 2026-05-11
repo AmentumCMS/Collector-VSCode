@@ -35,7 +35,7 @@ jobs:
           sudo apt-get install -y skopeo pigz
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -70,7 +70,7 @@ jobs:
           ls -1sh ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: Upload TARchive
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz
           path: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
@@ -86,7 +86,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
           ls -1sh ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
 
       - name: Upload jsons
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip
           path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
@@ -170,42 +170,42 @@ jobs:
           echo -e "\n\nDirector Tree:\n$(tree -a .)"
 
       - name: Upload extension TARchive
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload extension TARchive Inventory
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
       - name: Upload Installers TARchive
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload Installers TARchive Inventory
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
       # - name: Upload VSIX ZIP
-      #   uses: actions/upload-artifact@v6
+      #   uses: actions/upload-artifact@v7
       #   with:
       #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
       #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
       #     if-no-files-found: error
 
       # - name: Upload VSIX ZIP Inventory
-      #   uses: actions/upload-artifact@v6
+      #   uses: actions/upload-artifact@v7
       #   with:
       #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
       #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
@@ -237,7 +237,7 @@ jobs:
           ls -1sht *
 
       - name: Upload bundle
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle*
@@ -318,7 +318,7 @@ jobs:
             | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
 
       - name: Upload iso ToC artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
@@ -345,7 +345,7 @@ jobs:
         run: ls -1sh *.iso*
 
       - name: Upload iso artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*
