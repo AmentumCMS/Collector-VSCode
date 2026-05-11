@@ -7,7 +7,7 @@ on:
 
 jobs:
   Date:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       Date: ${{ steps.date.outputs.date }}
     steps:
@@ -22,12 +22,12 @@ jobs:
 
   Skopeo:
     needs: [Date]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Skopeo
         run: |
@@ -70,7 +70,7 @@ jobs:
           ls -1sh ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: Upload TARchive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz
           path: ${{ vars.COLLECTOR }}-skopeo-${{ needs.Date.outputs.Date }}.tgz*
@@ -78,12 +78,12 @@ jobs:
 
   VSCodeSync:
     needs: [Date]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     env:
         GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -116,7 +116,7 @@ jobs:
           ls -1sh ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
 
       - name: Upload jsons
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip
           path: ${{ vars.COLLECTOR }}-json-${{ needs.Date.outputs.Date }}.zip*
@@ -170,42 +170,42 @@ jobs:
           echo -e "\n\nDirector Tree:\n$(tree -a .)"
 
       - name: Upload extension TARchive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload extension TARchive Inventory
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt
           path: ${{ vars.COLLECTOR }}-extensions-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
       - name: Upload Installers TARchive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz*
           if-no-files-found: error
 
       - name: Upload Installers TARchive Inventory
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt
           path: ${{ vars.COLLECTOR }}-installers-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
       # - name: Upload VSIX ZIP
-      #   uses: actions/upload-artifact@v4
+      #   uses: actions/upload-artifact@v6
       #   with:
       #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip*
       #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip
       #     if-no-files-found: error
 
       # - name: Upload VSIX ZIP Inventory
-      #   uses: actions/upload-artifact@v4
+      #   uses: actions/upload-artifact@v6
       #   with:
       #     name: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
       #     path: ${{ vars.COLLECTOR }}-vsix-${{ needs.Date.outputs.Date }}.zip.txt
@@ -213,10 +213,10 @@ jobs:
 
   Code:
     needs: [Date]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Git
         run: |
@@ -237,14 +237,14 @@ jobs:
           ls -1sht *
 
       - name: Upload bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle*
           if-no-files-found: error
 
   Release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [Date, Code, Skopeo, VSCodeSync]
     permissions:
       contents: write
@@ -253,10 +253,10 @@ jobs:
         GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           merge-multiple: true
 
@@ -268,14 +268,14 @@ jobs:
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
 
   Sharepoint:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [Date, Code, Skopeo, VSCodeSync]
     permissions:
       contents: write
       pull-requests: read
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           merge-multiple: true
 
@@ -287,7 +287,7 @@ jobs:
         run: ls -1sh ${{ vars.COLLECTOR }}-*.*
 
   MakeISO:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: [Date, Code, Skopeo, VSCodeSync]
     permissions:
       contents: write
@@ -305,7 +305,7 @@ jobs:
           sudo apt-get install -y xorriso isomd5sum
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           merge-multiple: true
 
@@ -318,7 +318,7 @@ jobs:
             | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
 
       - name: Upload iso ToC artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
@@ -345,7 +345,7 @@ jobs:
         run: ls -1sh *.iso*
 
       - name: Upload iso artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*

@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   Date:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     outputs:
       Date: ${{ steps.date.outputs.date }}
     steps:
@@ -36,7 +36,7 @@ jobs:
           sudo apt-get install -y xorriso isomd5sum
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           merge-multiple: true
 
@@ -49,7 +49,7 @@ jobs:
             | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
 
       - name: Upload iso ToC artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
@@ -76,7 +76,7 @@ jobs:
         run: ls -1sh *.iso*
 
       - name: Upload iso artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso*
