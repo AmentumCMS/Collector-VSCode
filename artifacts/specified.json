@@ -76,8 +76,9 @@
         "VisualStudioExptTeam.vscodeintellicode-completions",
         "visualstudioexptteam.intellicode-api-usage-examples",
         "vitest.explorer",
-        "vmware.vscode-boot-dev-pack",
         "vmware-pscoe.vrealize-developer-tools",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-boot-dashboard",
         "vscjava.vscode-gradle",
         "vscjava.vscode-java-debug",
         "vscjava.vscode-java-dependency",
@@ -88,7 +89,6 @@
         "wallabyjs.quokka-vscode",
         "wallabyjs.wallaby-extension-pack",
         "dsznajder.es7-react-js-snippets",
-        "vmware.vscode-boot-dev-pack",
         "vscodevim.vim",
         "zenclabs.previewjs"
     ]
