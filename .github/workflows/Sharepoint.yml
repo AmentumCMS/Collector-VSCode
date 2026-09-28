@@ -60,20 +60,20 @@ jobs:
           DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
 
           RUN_ID=$(gh run list \
-          --branch "$DEFAULT_BRANCH" \
-          --status success \
-          --limit 1 \
-          --json databaseId \
-          -q '.[0].databaseId')
+            --branch "$DEFAULT_BRANCH" \
+            --status success \
+            --limit 1 \
+            --json databaseId \
+            -q '.[0].databaseId')
 
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
 
-          - name: Download artifacts
-          env:
+      - name: Download artifacts
+        env:
           GH_TOKEN: ${{ github.token }}
-          run: |
+        run: |
           gh run download "${{ steps.run.outputs.run_id }}" \
-          --dir release-assets
+            --dir release-assets
 
       - name: Show contents
         run: |
