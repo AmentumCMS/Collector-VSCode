@@ -60,16 +60,16 @@ jobs:
           DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
           echo -e "Using default branch: $DEFAULT_BRANCH"
 
-          echo -e "\nLast 5 successful runs on $DEFAULT_BRANCH - collect-main.yaml \:"
+          echo -e "\nLast 5 successful runs on $DEFAULT_BRANCH - collect-main.yml \:"
           gh run list \
-            --workflow collect-main.yaml \
+            --workflow collect-main.yml \
             --branch "$DEFAULT_BRANCH" \
             --status success \
             --limit 5
           
-          echo -e "\nUsing latest successful run on $DEFAULT_BRANCH - collect-main.yaml \:"
+          echo -e "\nUsing latest successful run on $DEFAULT_BRANCH - collect-main.yml \:"
           RUN_ID=$(gh run list \
-            --workflow collect-main.yaml \
+            --workflow collect-main.yml \
             --branch "$DEFAULT_BRANCH" \
             --status success \
             --limit 1 \
