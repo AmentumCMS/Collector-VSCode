@@ -31,7 +31,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Skopeo
         run: |
@@ -59,7 +59,7 @@ jobs:
 
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -lAhS *)"
+          echo -e "Directory Contents\n$(ls -1Ssh *)"
           echo -e "\n\nDirectory Size\n$(du -hd1)"
 
       - name: TARchive Skopeo Output
@@ -87,7 +87,7 @@ jobs:
         GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Login to DockerHub
         uses: docker/login-action@v4
@@ -220,7 +220,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Git
         run: |
@@ -261,7 +261,7 @@ jobs:
           sudo echo -e "Disk freespace and mounts\n$(df -hT)\n\n$(mount)" | tee runner-disks.txt
 
       - name: Check out repository code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
