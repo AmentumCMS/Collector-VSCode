@@ -38,7 +38,7 @@ jobs:
     needs: [Context]
     permissions:
       contents: read
-      pull-requests: read 
+      pull-requests: read
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -51,6 +51,33 @@ jobs:
       - name: Determine runner mounts
         run: |
           sudo echo -e "Disk freespace and mounts\n$(df -hT)\n\n$(mount)" | tee runner-disks.txt
+
+      - name: Find latest successful run on default branch
+        id: run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q '.defaultBranchRef.name')
+
+          RUN_ID=$(gh run list \
+          --branch "$DEFAULT_BRANCH" \
+          --status success \
+          --limit 1 \
+          --json databaseId \
+          -q '.[0].databaseId')
+
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+
+          - name: Download artifacts
+          env:
+          GH_TOKEN: ${{ github.token }}
+          run: |
+          gh run download "${{ steps.run.outputs.run_id }}" \
+          --dir release-assets
+
+      - name: Show contents
+        run: |
+          find release-assets
 
       - name: Download release assets for selected tag
         env:
