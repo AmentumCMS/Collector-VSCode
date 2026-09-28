@@ -77,6 +77,7 @@
         "VisualStudioExptTeam.vscodeintellicode-completions",
         "visualstudioexptteam.intellicode-api-usage-examples",
         "vitest.explorer",
+        "vscjava.vscode-spring-boot-dashboard",
         "vscjava.vscode-gradle",
         "vscjava.vscode-java-debug",
         "vscjava.vscode-java-dependency",
